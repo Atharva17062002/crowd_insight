@@ -65,7 +65,7 @@ class _PhoneScreenState extends State<PhoneScreen> {
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Padding(
@@ -114,16 +114,13 @@ class _PhoneScreenState extends State<PhoneScreen> {
               child: TextButton(
                   onPressed: () {
                     print(phoneNumber);
-                    sendPhoneNumber();
+                    // sendPhoneNumber();
                     ap.isSignedIn == true
                         ? Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => const ImportantInfoScreen()))
-                        : Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => OtpScreen(verificationId: '', phoneNumber: phoneNumber.text,)));
+                        : sendPhoneNumber();
                   },
                   child: const Text(
                     'CONTINUE',

@@ -80,6 +80,19 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> sendLocationtoFirestore({required BuildContext context, required String uid, required String location}) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      await _firebaseFirestore.collection('location').doc(uid).set({
+        'location': location,
+      });
+    } on FirebaseException catch (e) {
+      showSnackBar(context, e.message.toString());
+    }
+  }
+
   Future<bool> checkExistingUser() async {
     //DocumentSnapshot snapshot = await _firebaseFirestore.collection("users").doc(_uid).get();
     var snapshot = _firebaseAuth.currentUser;
