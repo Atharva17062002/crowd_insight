@@ -5,7 +5,13 @@
     <application
         android:label="crowd_insight"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:enableOnBackInvokedCallback="true"
+        >
+
+
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA2DJUOFfzn3vQtHy5zWxYnGo9YnqaeBwY"/>
         <activity
 
             android:name=".MainActivity"

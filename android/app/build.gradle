@@ -72,3 +72,5 @@ dependencies {
     implementation 'androidx.browser:browser:1.4.0'
     implementation("com.google.firebase:firebase-appcheck")
 }
+
+

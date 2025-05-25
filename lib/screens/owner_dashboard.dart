@@ -1,7 +1,12 @@
+import 'package:crowd_insight/screens/imp_info_screen.dart';
+import 'package:crowd_insight/screens/map_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:http/http.dart';
 
+import '../main.dart';
 import '../utils/functions.dart';
 import '../utils/utils.dart';
 
@@ -17,7 +22,7 @@ class _OwnerDashboardState extends State<OwnerDashboard> {
   Client? httpClient;
   List<List<dynamic>> allLocations = [];
   List<dynamic> userLocation = [];
-  String TextBoxValue = "";
+  String TextBoxValue = "21.1112058,56.8861138";
 
   @override
   void initState() {
@@ -27,25 +32,37 @@ class _OwnerDashboardState extends State<OwnerDashboard> {
     ethClient = Web3Client(infura_url, httpClient!);
   }
 
-  Future<void> _getLocation() async {
-    final location = await getLocation('2', ethClient!);
+  Future<void> _getLocation(List<List<String>> coordinates) async {
+    // final location = await getLocation('2', ethClient!);
     setState(() {
-      userLocation = location;
+      userLocation = coordinates.last;
       TextBoxValue = userLocation.toString();
-
     });
   }
 
-  Future<void> _getAllLocations() async {
-    final locations = await getAllLocations(ethClient!);
+  Future<void> _getAllLocations(List<List<String>> coordinates) async {
+    // final locations = await getAllLocations(ethClient!);
     setState(() {
-      allLocations = locations;
+      allLocations = coordinates;
       TextBoxValue = allLocations.toString();
     });
   }
 
+  List<LatLng> convertToLatLng(List<dynamic> inputList) {
+    List<LatLng> result = [];
+    for (var item in inputList) {
+      // var coordinates = item[0];
+      double lat = double.tryParse(item[1]) ?? 0.0;
+      double lng = double.tryParse(item[2]) ?? 0.0;
+      result.add(LatLng(lat, lng));
+    }
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
+    List<List<String>> coordinates =
+        Provider.of<CoordinateData>(context).coordinates;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Owner Dashboard'),
@@ -65,7 +82,8 @@ class _OwnerDashboardState extends State<OwnerDashboard> {
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: Text( TextBoxValue,
+                  child: Text(
+                    TextBoxValue,
                     style: const TextStyle(color: Colors.black, fontSize: 20),
                   ),
                 ),
@@ -73,37 +91,61 @@ class _OwnerDashboardState extends State<OwnerDashboard> {
             ),
             const SizedBox(height: 30),
             ElevatedButton(
-              onPressed: _getLocation,
-              child: const Text(
-                'Get Location',
-                style: TextStyle(color: Colors.white),
-              ),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ImportantInfoScreen()));
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
               ),
-            ),
-            ElevatedButton(
-              onPressed: _getAllLocations,
               child: const Text(
-                'Get All Locations',
+                'User Page',
                 style: TextStyle(color: Colors.white),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
               ),
             ),
             ElevatedButton(
               onPressed: () {
-                // Add functionality for the 'View' button if needed
+                _getAllLocations(coordinates);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+              ),
+              child: const Text(
+                'Get All Locations',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _getLocation(coordinates);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+              ),
+              child: const Text(
+                'Get Location of current user',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                print(userLocation);
+                var result = convertToLatLng(userLocation);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MapScreen(locations: result),
+                  ),
+                );
               },
               child: const Text(
-                'View',
+                'Show locations on map',
                 style: TextStyle(color: Colors.white),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue,
               ),
-            )
+            ),
           ],
         ),
       ),

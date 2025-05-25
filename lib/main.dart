@@ -1,5 +1,6 @@
 import 'package:crowd_insight/provider/auth_provider.dart';
 import 'package:crowd_insight/screens/imp_info_screen.dart';
+import 'package:crowd_insight/screens/map_screen.dart';
 import 'package:crowd_insight/screens/owner_dashboard.dart';
 import 'package:crowd_insight/screens/phonenumber_screen.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -26,6 +27,10 @@ void main() async {
   runApp(const MyApp());
 }
 
+class CoordinateData extends ChangeNotifier {
+  List<List<String>> coordinates = [];
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -34,6 +39,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => CoordinateData())
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -41,7 +47,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const OwnerDashboard(),
+        home: PhoneScreen(),
       ),
     );
   }

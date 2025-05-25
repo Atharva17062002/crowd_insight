@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:crowd_insight/utils/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:provider/provider.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:http/http.dart';
 
+import '../main.dart';
 import '../utils/utils.dart';
 
 class ImportantInfoScreen extends StatefulWidget {
@@ -39,7 +41,13 @@ class _ImportantInfoScreenState extends State<ImportantInfoScreen> {
       // insertDataToFirestore();
     });
   }
-
+  //
+  // @override
+  // void dispose() {
+  //   // TODO: implement dispose
+  //   httpClient!.close();
+  //   super.dispose();
+  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,12 +76,12 @@ class _ImportantInfoScreenState extends State<ImportantInfoScreen> {
                   ),
                   SizedBox(height: 10.0),
                   Text(
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tristique interdum odio, eget vulputate felis lacinia vel. Nulla facilisi. Sed quis rhoncus risus.',
+                    'Please submit accurate and respectful location data through CrowdInsight. Your responsible contributions are essential for generating meaningful insights and upholding user privacy. Thank you for your cooperation and support!',
                     style: TextStyle(fontSize: 16.0),
                   ),
                   SizedBox(height: 20.0),
                   Text(
-                    'Date: February 17, 2024',
+                    'Date: May 17, 2024',
                     style: TextStyle(fontSize: 16.0),
                   ),
                   SizedBox(height: 10.0),
@@ -87,7 +95,9 @@ class _ImportantInfoScreenState extends State<ImportantInfoScreen> {
             SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
-                addLocation(lat.toString(), lng.toString(), '2', ethClient!);
+                Provider.of<CoordinateData>(context, listen: false).coordinates.add([lat.toString(), lng.toString()]);
+                addLocation(lat.toString(), lng.toString(), '5', ethClient!);
+                showSnackBar(context, 'Location sent successfully');
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
               child: const Text(
